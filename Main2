@@ -1,0 +1,46 @@
+import pandas as pd
+
+# Input campaign data
+data = [
+    ("crypto", 46, 1.235, 5547, 184, 0.01, 193, 2.82),
+    ("bitcoin", 23, 1.383, 4603, 112, 0.01, 115, 1.81),
+    ("binance", 19, 1.203, 3495, 78, 0.01, 79, 1.88),
+    # ... add all other keywords data here
+]
+
+df = pd.DataFrame(data, columns=["Keyword", "Clicks", "Impression", "Spend", "Engagements", "CPC", "CPC_calc", "CTR"])
+
+# Calculate 'Cost_Per_Engagement'
+df["CPE"] = df["Spend"] / df["Engagements"]
+
+# Calculate 'Effective_CTR'
+df["Effective_CTR"] = (df["Clicks"] + df["Engagements"]) / df["Impression"] * 100
+
+# Ranking - Analyzing performance metrics
+rankings = (
+    df.sort_values(by=["CTR", "Engagements", "Clicks"], ascending=[False, False, False])[
+        ["Keyword", "Clicks", "Impression", "Spend", "Engagements", "CPC", "CTR", "Effective_CTR", "CPE"]
+    ]
+)
+
+print("Keyword Performance Rankings:")
+print(rankings)
+print("\n")
+
+print("Top 5 Lowest CPE:")
+print(rankings.nsmallest(5, "CPE"))
+
+print("Top 5 Highest Engagements:")
+print(rankings.nlargest(5, "Engagements"))
+
+print("Top 5 Highest CTR:")
+print(rankings.nlargest(5, "CTR"))
+
+print("Top 5 Highest Effective CTR:")
+print(rankings.nlargest(5, "Effective_CTR"))
+
+# Recommendations
+top_performers = rankings.nlargest(5, "CTR")["Keyword"].tolist()
+print(f"\nBased on the analysis, we recommend focusing on the following top-performing keywords: {', '.join(top_performers)}.")
+
+
