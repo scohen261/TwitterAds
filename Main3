@@ -1,0 +1,40 @@
+import csv
+import openai
+
+
+# Load OpenAI API key
+openai.api_key = 
+
+# Read CSV file and store data in a list
+def read_csv(file_name):
+    data = []
+    with open(file_name, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            data.append(row)
+    return data
+
+# Ask GPT-3 a question using provided data
+def ask_gpt3(prompt, data):
+    formatted_data = f"### Here's the sample data in a structured format.\n```{data}```"
+    prompt = formatted_data + "\n"
+
+    response = openai.Completion.create(
+        engine="gpt-4",
+        prompt = prompt,
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
+    return response.choices[0].text.strip()
+
+# Read CSV data
+csv_data = read_csv("/Users/samcohen/Downloads/ad_data_template.csv")
+
+# Prompt to ask GPT-4
+user_prompt = "Given the following Twitter campaign data, please provide a detailed and thorough analysis of the performance of each keyword. The analysis should consider engagements, spend, clicks, click rate, and cost-per-click (CPC).In addition to analyzing the existing keywords, please suggest new keywords or variations of current high-performing keywords that could potentially improve the performance and cost-efficiency of the Twitter campaigns.The goal is to enhance campaign performance through strategic keyword selection, aimed at maximizing engagements and clicks while minimizing spend and CPC. Recommendations should be data-driven, clearly explained, and suitable for consistent, repeatable application in future campaign planning."
+
+# Get GPT-4 response
+answer = ask_gpt3(user_prompt, csv_data)
+print(answer)
