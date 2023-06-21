@@ -3,7 +3,7 @@ import openai
 
 
 # Load OpenAI API key
-openai.api_key = 
+openai.api_key = ?????????
 
 # Read CSV file and store data in a list
 def read_csv(file_name):
